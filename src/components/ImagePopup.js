@@ -1,14 +1,16 @@
 import React from "react";
 
-function ImagePopup() {
+function ImagePopup({card, onClose}) {
   return (
-    <div className="popup popup_type_image-view" aria-label="Попап с фотографией">
+    <>
+    <div aria-label="Попап с фотографией"  className={`popup popup_type_image-view ${card.name === undefined ? '' : 'popup_opened'}`}>
     <div className="popup__container popup__container_image">
-        <button type="button" className="popup__btn-close" title="Закрыть картинку"></button>
-        <img className="popup__pic" src="#" alt="/" />
+        <button type="button" className="popup__btn-close" title="Закрыть картинку" onClick={onClose}></button>
+        <img className="popup__pic" src={card.link} alt={card.name} />
         <div className="popup__name-place"></div>
     </div>
 </div>
+  </>
   );
 }
 
