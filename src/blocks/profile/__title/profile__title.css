@@ -2,7 +2,7 @@
   margin-top: 22px;
   margin-bottom: 0px;
   max-width: 336px;
-  font-family: 'Inter', 'Arial', 'Helvetica', sans-serif;
+  font-family: "Inter", "Arial", "Helvetica", sans-serif;
   font-style: normal;
   font-weight: 500;
   font-size: 42px;
@@ -10,7 +10,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 @media screen and (max-width: 699px) {
@@ -21,6 +21,6 @@
     max-width: 189px;
     text-align: center;
     margin-top: 26px;
-    padding-left: 45px;
+    padding-left: 75px;
   }
 }
