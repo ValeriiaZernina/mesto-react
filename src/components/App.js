@@ -48,13 +48,10 @@ function App() {
     <Footer/>
 
       {/* всплывающее окно редактирования данных профиля */}
-
     <PopupWithForm title="Редактировать профиль" name="profile-edit" isOpen={isEditProfileOpenPopup} onClose={closeAllPopups}>
-    <input 
-      className="popup__input popup__input_enter_name"
+    <input className="popup__input popup__input_enter_name"
       type="text"
       name="UserName"
-      value=""
       id="userName"
       placeholder="Имя"
       minLength="2"
@@ -64,7 +61,7 @@ function App() {
     <span
     id="userName-error"
     className="popup__input-error"></span>
-    <input className="popup__input popup__input_enter_data" type="text" name="UserAbout" value="" id="userAbout"
+    <input className="popup__input popup__input_enter_data" type="text" name="UserAbout" id="userAbout"
     placeholder="О себе" minLength="2" maxLength="200" required/>
     <span id="userAbout-error" className="popup__input-error"></span>
     <button type="submit" className="popup__btn-save" title="Сохранить">Сохранить</button>
@@ -72,22 +69,21 @@ function App() {
 
     {/* всплывающее окно добавления картинки */}
     <PopupWithForm title="Новое место" name="profile-add" isOpen={isAddPlaceOpenPopup} onClose={closeAllPopups}>
-                    <input className="popup__input popup__input_enter_place" type="text" name="InputPlace" value="" id="inputPlace"
+                    <input className="popup__input popup__input_enter_place" type="text" name="InputPlace" id="inputPlace"
                         placeholder="Название" minLength="2" maxLength="30" required/>
                         <span id="inputPlace-error" className="popup__input-error"></span>
-                    <input className="popup__input popup__input_enter_link" type="url" name="InputLink" value="" id="inputLink"
+                    <input className="popup__input popup__input_enter_link" type="url" name="InputLink" id="inputLink"
                         placeholder="Ссылка на картинку" required/>
                         <span id="inputLink-error" className="popup__input-error"></span>
-                    <button type="submit" className="popup__btn-save popup__btn-save_disabled" title="Создать">Создать</button>
+                    <button type="submit" className="popup__btn-save" title="Создать">Создать</button>
         </PopupWithForm> 
 
      {/* всплывающее окно обновления аватара пользователя  */}
-
      <PopupWithForm title="Обновить аватар" name="avatar-update" isOpen={isEditAvatarOpenPopup} onClose={closeAllPopups}>
-            <input className="popup__input popup__input_enter_link" type="url" name="AvatarLink" value="" id="avatarLink"
+            <input className="popup__input popup__input_enter_link" type="url" name="AvatarLink" id="avatarLink"
             placeholder="Ссылка на картинку аватара" required/>
             <span id="avatarLink-error" className="popup__input-error"></span>
-        <button type="submit" className="popup__btn-save popup__btn-save_disabled" title="Сохранить">Сохранить</button>
+        <button type="submit" className="popup__btn-save" title="Сохранить">Сохранить</button>
     </PopupWithForm> 
 
 

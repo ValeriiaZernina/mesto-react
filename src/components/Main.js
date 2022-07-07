@@ -12,7 +12,7 @@ useEffect(() => {
  api.getInitialUser()
  .then((data) => {
     setUserName(data.name);
-    setuserDescription(data.info);
+    setuserDescription(data.about);
     setUserAvatar(data.avatar);
   })
   .catch((err) => alert(err));
