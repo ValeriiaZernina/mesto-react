@@ -5,12 +5,12 @@ function AddPlacePopup({ isOpen, onClose, onAddPlace }) {
   const [name, setName] = useState("");
   const [link, setLink] = useState("");
 
-  function handleChangeName(event) {
-    setName(event.target.value);
+  function handleChangeName(e) {
+    setName(e.target.value);
   }
 
-  function handleChangeLink(event) {
-    setLink(event.target.value);
+  function handleChangeLink(e) {
+    setLink(e.target.value);
   }
 
   function handleSubmit(event) {
@@ -38,6 +38,7 @@ function AddPlacePopup({ isOpen, onClose, onAddPlace }) {
     >
       <input
         onChange={handleChangeName}
+        value={name}
         className="popup__input popup__input_enter_place"
         type="text"
         name="InputPlace"
@@ -50,6 +51,7 @@ function AddPlacePopup({ isOpen, onClose, onAddPlace }) {
       <span id="inputPlace-error" className="popup__input-error"></span>
       <input
         onChange={handleChangeLink}
+        value={link}
         className="popup__input popup__input_enter_link"
         type="url"
         name="InputLink"
