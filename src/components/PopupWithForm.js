@@ -1,4 +1,12 @@
-function PopupWithForm({ title, name, children, isOpen, onClose, buttonText }) {
+function PopupWithForm({
+  title,
+  name,
+  children,
+  isOpen,
+  onClose,
+  buttonText,
+  onSubmit,
+}) {
   return (
     <div className={`popup popup_type_${name} ${isOpen && "popup_opened"}`}>
       <div className="popup__container">
@@ -9,7 +17,12 @@ function PopupWithForm({ title, name, children, isOpen, onClose, buttonText }) {
           aria-label="Закрыть форму"
           onClick={onClose}
         ></button>
-        <form className="popup__form" name={name} noValidate>
+        <form
+          className="popup__form"
+          name={name}
+          noValidate
+          onSubmit={onSubmit}
+        >
           {children}
           <button className={`popup__btn-save popup__btn-save-deleteImg`}>
             {buttonText}

@@ -2,14 +2,36 @@ import Header from "./Header";
 import Main from "./Main";
 import Footer from "./Footer";
 import PopupWithForm from "./PopupWithForm";
-import { useState } from "react";
+import EditProfilePopup from "./EditProfilePopup";
+import EditAvatarPopup from "./EditAvatarPopup";
+import { useState, useEffect } from "react";
 import ImagePopup from "./ImagePopup";
+import { CurrentUserContext } from "../contexts/CurrentUserContext";
+import { api } from "../utils/Api";
 
 function App() {
   const [isEditAvatarOpenPopup, setIsEditAvatarOpenPopup] = useState(false);
   const [isEditProfileOpenPopup, setIsEditProfileOpenPopup] = useState(false);
   const [isAddPlaceOpenPopup, setIsAddPlaceOpenPopup] = useState(false);
   const [selectedCard, setSelectedCard] = useState({});
+  const [currentUser, setCurrentUser] = useState({});
+  const [cards, setCards] = useState([]);
+
+  useEffect(() => {
+    api
+      .getInitialUser()
+      .then((data) => {
+        setCurrentUser(data);
+      })
+      .catch((err) => alert(err));
+
+    api
+      .getInitialCards()
+      .then((cards) => {
+        setCards(cards);
+      })
+      .catch((err) => alert(err));
+  }, []);
 
   function handleEditAvatarClick() {
     setIsEditAvatarOpenPopup(true);
@@ -23,10 +45,6 @@ function App() {
     setIsAddPlaceOpenPopup(true);
   }
 
-  function handleCardClick(card) {
-    setSelectedCard(card);
-  }
-
   function closeAllPopups() {
     setIsEditAvatarOpenPopup(false);
     setIsEditProfileOpenPopup(false);
@@ -34,110 +52,126 @@ function App() {
     setSelectedCard({});
   }
 
+  function handleCardClick(card) {
+    setSelectedCard(card);
+  }
+
+  function handleCardLike(card) {
+    const isLiked = card.likes.some((i) => i._id === currentUser._id);
+    api
+      .changeLikeCardStatus(card._id, !isLiked)
+      .then((newCard) => {
+        setCards((state) =>
+          state.map((c) => (c._id === card._id ? newCard : c))
+        );
+      })
+      .catch((err) => alert(err));
+  }
+
+  function handleCardDelete(card) {
+    api
+      .deleteCard(card._id)
+      .then(() => {
+        setCards((state) => state.filter((c) => c._id !== card._id));
+        closeAllPopups();
+      })
+      .catch((err) => alert(err));
+  }
+
+  function handleUpdateUser({ name, about }) {
+    api
+      .patchUser(name, about)
+      .then((data) => {
+        setCurrentUser(data);
+        closeAllPopups();
+      })
+      .catch((err) => alert(err));
+  }
+
+  function handleUpdateAvatar({ avatar }) {
+    api
+      .patchAvatar(avatar)
+      .then((data) => {
+        setCurrentUser(data);
+        closeAllPopups();
+      })
+      .catch((err) => alert(err));
+  }
+
   return (
     <div className="page">
-      <Header />
-      <Main
-        onEditProfile={handleEditProfileClick}
-        onAddPlace={handleAddPlaceClick}
-        onEditAvatar={handleEditAvatarClick}
-        onCardClick={handleCardClick}
-      />
-      <Footer />
-
-      {/* всплывающее окно редактирования данных профиля */}
-      <PopupWithForm
-        title="Редактировать профиль"
-        name="profile-edit"
-        isOpen={isEditProfileOpenPopup}
-        onClose={closeAllPopups}
-        buttonText="Сохранить"
-      >
-        <input
-          className="popup__input popup__input_enter_name"
-          type="text"
-          name="UserName"
-          id="userName"
-          placeholder="Имя"
-          minLength="2"
-          maxLength="40"
-          pattern="[А-ЯЁа-яёA-Za-z -]{1,40}"
-          required
+      <CurrentUserContext.Provider value={currentUser}>
+        <Header />
+        <Main
+          cards={cards}
+          onEditProfile={handleEditProfileClick}
+          onAddPlace={handleAddPlaceClick}
+          onEditAvatar={handleEditAvatarClick}
+          onCardClick={handleCardClick}
+          onCardLike={handleCardLike}
+          onCardDelete={handleCardDelete}
         />
-        <span id="userName-error" className="popup__input-error"></span>
-        <input
-          className="popup__input popup__input_enter_data"
-          type="text"
-          name="UserAbout"
-          id="userAbout"
-          placeholder="О себе"
-          minLength="2"
-          maxLength="200"
-          required
-        />
-        <span id="userAbout-error" className="popup__input-error"></span>
-      </PopupWithForm>
+        <Footer />
 
-      {/* всплывающее окно добавления картинки */}
-      <PopupWithForm
-        title="Новое место"
-        name="profile-add"
-        isOpen={isAddPlaceOpenPopup}
-        onClose={closeAllPopups}
-        buttonText="Создать"
-      >
-        <input
-          className="popup__input popup__input_enter_place"
-          type="text"
-          name="InputPlace"
-          id="inputPlace"
-          placeholder="Название"
-          minLength="2"
-          maxLength="30"
-          required
-        />
-        <span id="inputPlace-error" className="popup__input-error"></span>
-        <input
-          className="popup__input popup__input_enter_link"
-          type="url"
-          name="InputLink"
-          id="inputLink"
-          placeholder="Ссылка на картинку"
-          required
-        />
-        <span id="inputLink-error" className="popup__input-error"></span>
-      </PopupWithForm>
+        {/* всплывающее окно редактирования данных профиля */}
+        <EditProfilePopup
+          isOpen={isEditProfileOpenPopup}
+          onClose={closeAllPopups}
+          onUpdateUser={handleUpdateUser}
+        ></EditProfilePopup>
 
-      {/* всплывающее окно обновления аватара пользователя  */}
-      <PopupWithForm
-        title="Обновить аватар"
-        name="avatar-update"
-        isOpen={isEditAvatarOpenPopup}
-        onClose={closeAllPopups}
-        buttonText="Сохранить"
-      >
-        <input
-          className="popup__input popup__input_enter_link"
-          type="url"
-          name="AvatarLink"
-          id="avatarLink"
-          placeholder="Ссылка на картинку аватара"
-          required
-        />
-        <span id="avatarLink-error" className="popup__input-error"></span>
-      </PopupWithForm>
+        {/* всплывающее окно добавления картинки */}
+        <PopupWithForm
+          title="Новое место"
+          name="profile-add"
+          isOpen={isAddPlaceOpenPopup}
+          onClose={closeAllPopups}
+          buttonText="Создать"
+        >
+          <input
+            className="popup__input popup__input_enter_place"
+            type="text"
+            name="InputPlace"
+            id="inputPlace"
+            placeholder="Название"
+            minLength="2"
+            maxLength="30"
+            required
+          />
+          <span id="inputPlace-error" className="popup__input-error"></span>
+          <input
+            className="popup__input popup__input_enter_link"
+            type="url"
+            name="InputLink"
+            id="inputLink"
+            placeholder="Ссылка на картинку"
+            required
+          />
+          <span id="inputLink-error" className="popup__input-error"></span>
+        </PopupWithForm>
 
-      {/* всплывающее окно удаления картинки */}
-      <PopupWithForm
-        title="Вы уверены?"
-        name="image-delete"
-        onClose={closeAllPopups}
-        buttonText="Да"
-      ></PopupWithForm>
+        {/* всплывающее окно обновления аватара пользователя  */}
+        <EditAvatarPopup
+          title="Обновить аватар"
+          name="avatar-update"
+          isOpen={isEditAvatarOpenPopup}
+          onClose={closeAllPopups}
+          onUpdateAvatar={handleUpdateAvatar}
+          buttonText="Сохранить"
+        ></EditAvatarPopup>
 
-      <ImagePopup card={selectedCard} onClose={closeAllPopups} />
+        {/* всплывающее окно удаления картинки */}
+        <PopupWithForm
+          title="Вы уверены?"
+          name="image-delete"
+          onCardDelete={handleCardDelete}
+          onClose={closeAllPopups}
+          buttonText="Да"
+        ></PopupWithForm>
+
+        <ImagePopup card={selectedCard} onClose={closeAllPopups} />
+      </CurrentUserContext.Provider>
     </div>
   );
 }
-
 export default App;
