@@ -4,6 +4,7 @@ import Footer from "./Footer";
 import PopupWithForm from "./PopupWithForm";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
+import AddPlacePopup from "./AddPlacePopup";
 import { useState, useEffect } from "react";
 import ImagePopup from "./ImagePopup";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
@@ -98,6 +99,16 @@ function App() {
       .catch((err) => alert(err));
   }
 
+  function handleAddPlaceSubmit({ name, link }) {
+    api
+      .addNewCard(name, link)
+      .then((newCard) => {
+        setCards([newCard, ...cards]);
+        closeAllPopups();
+      })
+      .catch((err) => alert(err));
+  }
+
   return (
     <div className="page">
       <CurrentUserContext.Provider value={currentUser}>
@@ -121,34 +132,14 @@ function App() {
         ></EditProfilePopup>
 
         {/* всплывающее окно добавления картинки */}
-        <PopupWithForm
+        <AddPlacePopup
           title="Новое место"
           name="profile-add"
           isOpen={isAddPlaceOpenPopup}
           onClose={closeAllPopups}
+          onAddPlace={handleAddPlaceSubmit}
           buttonText="Создать"
-        >
-          <input
-            className="popup__input popup__input_enter_place"
-            type="text"
-            name="InputPlace"
-            id="inputPlace"
-            placeholder="Название"
-            minLength="2"
-            maxLength="30"
-            required
-          />
-          <span id="inputPlace-error" className="popup__input-error"></span>
-          <input
-            className="popup__input popup__input_enter_link"
-            type="url"
-            name="InputLink"
-            id="inputLink"
-            placeholder="Ссылка на картинку"
-            required
-          />
-          <span id="inputLink-error" className="popup__input-error"></span>
-        </PopupWithForm>
+        ></AddPlacePopup>
 
         {/* всплывающее окно обновления аватара пользователя  */}
         <EditAvatarPopup
