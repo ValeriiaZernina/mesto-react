@@ -17,12 +17,7 @@ function PopupWithForm({
           aria-label="Закрыть форму"
           onClick={onClose}
         ></button>
-        <form
-          className="popup__form"
-          name={name}
-          noValidate
-          onSubmit={onSubmit}
-        >
+        <form className="popup__form" name={name} onSubmit={onSubmit}>
           {children}
           <button className={`popup__btn-save popup__btn-save-deleteImg`}>
             {buttonText}
